@@ -86,40 +86,60 @@ Why the restore must run before `api` starts: when api starts on an empty databa
 
 <!-- Copy the block below once for every mission you solved and change cN to c2, c3 … Then delete the cN block itself. -->
 
-### cN
-- Committed fix: `lab4/clinic/cN/`
-- Error line (copied): ____
-- Checkpoint (name / path / port / app / config / data): ____
-- Fix: ____
-- Why this fix, and not the tempting one: ____
-- Hints used: ____
+### c2
+- Committed fix: `lab4/clinic/c2/`
+- Error line (copied): `0.0.0.0:3000->8102/tcp` in `docker compose ps` (and nothing answered on localhost:8102)
+- Checkpoint (name / path / port / app / config / data): port
+- Fix: `ports: "8102:3000"`
+- Why this fix, and not the tempting one: the ports format is HOST:CONTAINER. nginx listens on 3000 inside the container, so the container side must be 3000 and the laptop side 8102. The numbers were swapped. Editing nginx.conf to listen on 8102 is not allowed, and it would hide the real mistake.
+- Hints used: 0
+
+### c3
+- Committed fix: `lab4/clinic/c3/`
+- Error line (copied): `host not found in upstream "api" in /etc/nginx/conf.d/default.conf:6`
+- Checkpoint (name / path / port / app / config / data): name
+- Fix: `networks: [front, back]` on api
+- Why this fix, and not the tempting one: Docker's DNS only answers names between containers that share a network. web was on front and api on back, so they shared none. Putting web on back would make the name work, but then web could reach db directly, which breaks the design. Putting api on both networks makes it the only bridge.
+- Hints used: 0
+
+### c4
+- Committed fix: `lab4/clinic/c4/`
+- Error line (copied): `Failed to fetch` on the page, and `net::ERR_...` for `todos` in the browser's Network tab, from app.js:8 (curl to /api/todos answered 200)
+- Checkpoint (name / path / port / app / config / data): app
+- Fix: in `public/app.js`: `const API = '/api/todos';`
+- Why this fix, and not the tempting one: the JavaScript runs in the browser on my laptop, which is not on any Docker network, so it can't resolve the name api. A relative path goes to nginx, and nginx forwards /api/ to api inside Docker. Publishing api's port 5000 would work, but it opens a second public door, and only web should have one.
+- Hints used: 0
+
+### c5
+- Committed fix: `lab4/clinic/c5/`
+- Error line (copied): `curl -s localhost:8105/api/todos` printed `[]` after `docker compose down` and `up`, and `docker volume ls` showed a second random-name volume
+- Checkpoint (name / path / port / app / config / data): data
+- Fix: added `- pgdata:/var/lib/postgresql/data` under db and a `volumes: pgdata:` block at the bottom
+- Why this fix, and not the tempting one: without a named volume, Postgres writes to an anonymous volume that gets a new random name when the container is recreated, so the old data is left behind. A named volume keeps its name across down and up. A ./data bind mount would also keep the data, but it ties the stack to one folder on one machine and can cause permission problems.
+- Hints used: 0
 
 ## 5 · Run in one command
 
 ```bash
-git clone https://github.com/<you>/turiba-devops-labs.git && cd turiba-devops-labs
-____
-____
+git clone https://github.com/chamalka001/turiba-devops-labs.git && cd turiba-devops-labs
+cp .env.example .env
+docker compose up -d --wait
 ```
 
 ## 6 · Answers
 
 ### A1
 In c1 the API logged `ECONNREFUSED 127.0.0.1:5432`. Which container was `127.0.0.1`, and why does `db` work instead?
-
-____
+127.0.0.1 was the api container itself, because inside a container localhost means that container. Nothing listens on port 5432 inside api, so the connection was refused. The name db works because api and db share a network, and Docker's DNS turns the service name db into the IP address of the database container, where PostgreSQL listens on 5432.
 
 ### A2
 Trace `POST /api/todos` from your browser to PostgreSQL: each hop, with the name and port used. Why does `db` have no `ports:`?
-
-____
+Browser → localhost:8080 (the published port, forwarded to port 80 of the web container) → nginx sees the path /api/ and uses proxy_pass http://api:5000 (web finds api by name on the front network) → api container on port 5000 → api connects to db:5432 over the back network → PostgreSQL stores the todo, and the answer goes back the same way. db has no ports: because only api needs to reach it, and containers talk to each other over Docker networks without published ports. Publishing 5432 would open the database to my laptop and my network. My test P2 showed that the laptop gets connection refused.
 
 ### A3
 `docker compose down` kept your todos, and `docker compose down -v` deleted them. Where were they stored, and what exactly does `-v` remove?
-
-____
+The todos were stored in the named volume course-app_pgdata, which is mounted in db at /var/lib/postgresql/data. docker compose down removes the containers and networks, but not named volumes, so the new db container mounted the same volume and the data was still there. docker compose down -v also removes the named volumes declared in the compose file, here pgdata, so the database started empty and even the todos table was gone.
 
 ### A4
 With `db` stopped, `docker compose ps` showed `api` as healthy, but `/api/todos` answered 500. Explain both. What does `service_healthy` protect against, and what not?
-
-____
+The health check of api only asks whether the API process itself answers, it does not query the database. So api stays healthy while db is stopped, but /api/todos needs a database query, which fails, so it answers 500. Healthy means "ready by its own check", not "working end to end". service_healthy protects the start: api only starts after the db health check passes, so it never starts against a database that is not ready. It does not protect later: if db stops after api is running, Compose does not stop or restart api, and requests simply fail.
