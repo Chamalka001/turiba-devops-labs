@@ -9,3 +9,4 @@ node_modules/
 # Logs and exported images
 npm-debug.log*
 *.tar
+backup/
