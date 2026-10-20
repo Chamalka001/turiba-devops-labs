@@ -24,18 +24,18 @@ services:
     networks: [back]                      # no ports: unreachable from the laptop
     restart: unless-stopped
 
-  # api:                                    # your Lab 2 Dockerfile
-  #   build: ./api
-  #   environment:
-  #     DB_HOST: ____                       # how does api find the database? (slide 24)
-  #     DB_USER: todo
-  #     DB_NAME: todo
-  #     DB_PASSWORD: ${____:?set DB_PASSWORD in .env}
-  #   depends_on:
-  #     db:
-  #       condition: ____                   # started is not ready (slide 37)
-  #   networks: [____, ____]                # api talks to web and to db (slide 27)
-  #   restart: unless-stopped
+  api:                                    # your Lab 2 Dockerfile
+    build: ./api
+    environment:
+      DB_HOST: db                       # how does api find the database? (slide 24)
+      DB_USER: todo
+      DB_NAME: todo
+      DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    depends_on:
+      db:
+        condition: service_healthy                   # started is not ready (slide 37)
+    networks: [front, back]                # api talks to web and to db (slide 27)
+    restart: unless-stopped
 
   # web:                                    # nginx: the page + the reverse proxy
   #   build: ./web
