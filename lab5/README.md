@@ -22,7 +22,7 @@ graph-lint --------------------+
 |---|----------|----------------------|---------------------|
 | P1 | Which jobs start together? | graph-build and graph-lint, because they are the only jobs with no needs: line, so nothing makes them wait | graph-build and graph-lint started together. All five jobs green. |
 | P2 | Will `graph-package` find `build.txt`? | No, because every job runs on its own fresh machine and jobs do not share files. graph-test has a step that gets the file, graph-package does not | Correct. graph-test downloaded build.txt (it has a download-artifact step). graph-package printed "build.txt: not here: jobs don't share files" (no download step). |
-| P3 | With `break = build`: which jobs run, which fail, which are skipped? | graph-build fails on purpose. graph-lint runs because it does not need graph-build. graph-test is skipped because it needs graph-build. graph-package is skipped because it needs graph-test, which was skipped. graph-report still runs because it has if: always(). | ____ |
+| P3 | With `break = build`: which jobs run, which fail, which are skipped? | graph-build fails on purpose. graph-lint runs because it does not need graph-build. graph-test is skipped because it needs graph-build. graph-package is skipped because it needs graph-test, which was skipped. graph-report still runs because it has if: always(). | Correct. graph-build failed (red). graph-lint ran and passed. graph-test and graph-package were skipped (grey). graph-report still ran (green) because of if: always(). |
 
 ## 2 · Pipeline
 
