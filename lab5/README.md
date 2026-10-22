@@ -29,18 +29,18 @@ graph-lint --------------------+
 - B5, before I filled it in: `localhost` or `db`? I predicted db because in my Lab 4 compose.yaml the API used db as the database name.
 - My first red run in Part 2: there was none. All four checks (lint, unit, integration, image) were green at once.
 - What I changed to make it green: nothing, it was green at once.
-- My lint findings, and how I fixed them (fixed, not silenced): ____
+- My lint findings, and how I fixed them (fixed, not silenced): no findings. npm run lint printed no problems, so I did not need to change any code, and I did not use eslint-disable.
 - Part 2 pull request (URL): https://github.com/Chamalka001/turiba-devops-labs/pull/2
 - Part 3: will the PR run push an image? I predicted no, because the file says push only when the event is a push to main, and a PR is not that. What happened: correct. In the image job of the PR run, the step "Log in to GHCR (main only)" was skipped, and push was false, so the image was only built and not pushed.
-- My image on GHCR, from the `main` run: `ghcr.io/____/turiba-devops-labs/api:____`
+- My image on GHCR, from the `main` run: `ghcr.io/chamalka001/turiba-devops-labs/api:36e9d4177703a2cebde324d79392405b203379a0`
 
 ## 3 · Red PR
 
-- Red PR (URL): ____
-- The test that failed, with Expected and Received (copied): ____
-- The cause line from "On failure: the API log" (copied): ____
-- The merge box while it was red (the text, copied): ____
-- Which commit did the red check test: your branch alone, or your branch merged with `main`? How do you know? ____
+- Red PR (URL): https://github.com/Chamalka001/turiba-devops-labs/pull/3
+- The test that failed, with Expected and Received (copied): "DELETE with an id that is not a number answers 404" failed. Expected: 404, Received: 500. Tests: 1 failed, 5 passed, 6 total.
+- The cause line from "On failure: the API log" (copied): DELETE /api/todos/abc failed: invalid input syntax for type integer: "abc"
+- The merge box while it was red (the text, copied): Some checks were not successful. ci / integration failed, ci / image was skipped, and Merge pull request was greyed out, so I could not merge.
+- Which commit did the red check test: your branch alone, or your branch merged with `main`? It tested my branch merged with main. A pull_request run checks the temporary merge commit that GitHub makes from the PR branch and main (slide 9). I know this from the run summary page and the slide.
 
 ## 4 · Answers
 
