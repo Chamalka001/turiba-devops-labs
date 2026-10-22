@@ -26,7 +26,7 @@ graph-lint --------------------+
 
 ## 2 · Pipeline
 
-- B5, before I filled it in: `localhost` or `db`? I predicted ____ because ____
+- B5, before I filled it in: `localhost` or `db`? I predicted db because in my Lab 4 compose.yaml the API used db as the database name.
 - My first red run in Part 2 (the job, the first red step, the error line copied from the log): ____
 - What I changed to make it green: ____
 - My lint findings, and how I fixed them (fixed, not silenced): ____
