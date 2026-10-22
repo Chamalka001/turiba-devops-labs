@@ -29,10 +29,10 @@ graph-lint --------------------+
 - B5, before I filled it in: `localhost` or `db`? I predicted db because in my Lab 4 compose.yaml the API used db as the database name.
 - My first red run in Part 2: there was none. All four checks (lint, unit, integration, image) were green at once.
 - What I changed to make it green: nothing, it was green at once.
-- My lint findings, and how I fixed them (fixed, not silenced): ____
+- My lint findings, and how I fixed them (fixed, not silenced): no findings. npm run lint printed no problems, so I did not need to change any code, and I did not use eslint-disable.
 - Part 2 pull request (URL): https://github.com/Chamalka001/turiba-devops-labs/pull/2
 - Part 3: will the PR run push an image? I predicted no, because the file says push only when the event is a push to main, and a PR is not that. What happened: correct. In the image job of the PR run, the step "Log in to GHCR (main only)" was skipped, and push was false, so the image was only built and not pushed.
-- My image on GHCR, from the `main` run: `ghcr.io/____/turiba-devops-labs/api:____`
+- My image on GHCR, from the `main` run: `ghcr.io/chamalka001/turiba-devops-labs/api:36e9d4177703a2cebde324d79392405b203379a0`
 
 ## 3 · Red PR
 
