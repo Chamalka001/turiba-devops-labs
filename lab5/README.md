@@ -16,7 +16,8 @@ My drawing of the `lab05 graph` jobs, before the first run (boxes and arrows in 
 graph-build ---> graph-test ---+
                                +---> graph-package ---> graph-report
 graph-lint --------------------+
-(graph-report also waits for graph-build, graph-lint and graph-test)```
+(graph-report also waits for graph-build, graph-lint and graph-test)
+````
 
 | # | Question | I predicted, and why | What the run showed |
 |---|----------|----------------------|---------------------|
@@ -44,10 +45,10 @@ graph-lint --------------------+
 
 ## 4 · Answers
 
-**A1.** ____
+**A1.** In my break: build run, graph-build failed (red) on purpose. graph-lint ran and passed, because it does not need graph-build. graph-test and graph-package were skipped (grey), because they depend on graph-build, directly or through graph-test. graph-report still ran and was green. It ran because it has if: always(). Without a condition, a job runs only when everything it needs succeeded. always() means run whatever happened before. Job list from my run: graph-build failed, graph-lint succeeded, graph-test skipped, graph-package skipped, graph-report succeeded.
 
-**A2.** ____
+**A2.** Every job runs on its own fresh machine, and jobs do not share files. graph-test has a download-artifact step that gets build.txt. graph-package has no such step, so it did not find it. A download-artifact step in graph-package (for the file that graph-build uploads with upload-artifact) would make it find build.txt.
 
-**A3.** ____
+**A3.** Both are right because the steps run in different places. In Lab 4, the API ran inside a container on the Compose network, and the name db is the service name that only works there. In CI, the integration steps run on the runner machine itself, and the database service publishes port 5432 to it, so the database is at localhost:5432. If the job ran in a container (container: node:24-alpine), the steps would be on the same network as the service, so DB_HOST would be db (the service label).
 
-**A4.** ____
+**A4.** The required check ci / integration failed (Expected 404, Received 500), and image was skipped. The run tested the temporary merge commit that GitHub makes from my branch and main (slide 9). The ruleset stopped the merge, because a required check was not successful, so Merge pull request was greyed out. On my Part 2 PR the image job ran but did not push, because push is true only when the event is a push to main. On a PR, the login step is skipped and the image is only built for amd64.
