@@ -10,3 +10,11 @@ node_modules/
 npm-debug.log*
 *.tar
 backup/
+
+# Editors and operating systems
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# Test output
+coverage/

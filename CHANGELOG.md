@@ -8,3 +8,4 @@ All notable changes to this repository, newest first. The format follows [Keep a
 
 - Course API: containerized with a multi-stage, non-root image and a health check (Lab 2)
 - `docker compose up` starts the web front, the API and PostgreSQL with one command
+- `.gitignore` rules for editor, OS and test-coverage files
