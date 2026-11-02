@@ -6,7 +6,7 @@
 
 - **Fork:** https://github.com/Chamalka001/turiba-devops-labs
 - **Release:** https://github.com/Chamalka001/turiba-devops-labs/releases/tag/v0.1.0
-- **Reviewer:** @sachidumaleesha
+- **Reviewer:** @mleitass
 
 ## Part 1 · Set up
 
