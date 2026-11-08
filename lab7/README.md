@@ -83,10 +83,10 @@ deployment.apps/api rolled back
 
 ## 4 · What broke and how I found it
 
-- 🔮 Before applying the teammate's branch, I expected this to go wrong first: ____
+- 🔮 Before applying the teammate's branch, I expected this to go wrong first: the Pods, because they start before any traffic comes, so I expected ImagePullBackOff or a Pod that never becomes Ready. What happened: my prediction was right, the new Pod went to ImagePullBackOff and the 3 old Pods kept Running.
 
 | # | What I saw | The command, and the line of output that showed it | My fix (commit) |
 |--:|------------|-----------------------------------------------------|-----------------|
-| 1 | ____ | ____ | ____ |
-| 2 | ____ | ____ | ____ |
-| 3 | ____ | ____ | ____ |
+| 1 | New Pod stuck in ImagePullBackOff, rollout timed out | `kubectl -n course describe pod api-7544cb8bf-zkbn2`, Events: `Failed to pull image "ghcr.io/chamalka001/turiba-devops-labs/api:0.2.O": ... not found` (the tag has the letter O, not a zero) | 05eebce fix(k8s): correct the image tag, the letter O became a zero |
+| 2 | Pods Running, but the Service had no endpoints | `kubectl -n course get endpointslices -l kubernetes.io/service-name=api`: `ENDPOINTS <unset>`; then `kubectl -n course get pods --show-labels`: Pods have `app=api`, Service selector was `app.kubernetes.io/name: api` | 049cbf2 fix(k8s): make the Service selector match the Pod label app: api |
+| 3 | Endpoints existed, but curl got no answer through the port-forward | `kubectl -n course port-forward service/api 8081:80` log: `forwarding 8081 -> 8080 ... dial tcp4 127.0.0.1:8080: connect: connection refused`; the EndpointSlice also showed `PORTS 8080` (the API listens on 5000) | 276432d fix(k8s): point targetPort to 5000, where the API listens |
