@@ -64,17 +64,22 @@ Waiting for deployment "api" rollout to finish: 1 old replicas are pending termi
 deployment "api" successfully rolled out
 ```
 
-- 3b: 🔮 With the tag 9.9.9, I predicted that ____ old Pods keep running, because ____. What happened: ____
+- 3b: 🔮 With the tag 9.9.9, I predicted that 3 old Pods keep running, because the new Pod cannot pull its image, so it never becomes ready, and a rolling update only removes an old Pod when a new one is ready. What happened: 3 old Pods stayed Running and the new Pod api-88f8f59df-plhrs went to ImagePullBackOff. My prediction was right.
 
 ```text
 $ kubectl -n course get pods        (during the stall)
-____
+NAME                   READY   STATUS             RESTARTS   AGE
+api-6bfcf9fd4f-8kktj   1/1     Running            0          12m
+api-6bfcf9fd4f-9vt5w   1/1     Running            0          12m
+api-6bfcf9fd4f-p7vdg   1/1     Running            0          12m
+api-88f8f59df-plhrs    0/1     ImagePullBackOff   0          87s
 
 $ kubectl -n course rollout undo deployment/api
-____
+Warning: resource deployments/api was previously managed with 'kubectl apply'. Rolling back will not update the kubectl.kubernetes.io/last-applied-configuration annotation, which may cause unexpected behavior on future 'kubectl apply' operations. Consider using 'kubectl apply' with your previous configuration file instead.
+deployment.apps/api rolled back
 ```
 
-- What the `rollout undo` warning means, in my own words, and what I did so that Git and the cluster agree again: ____
+- What the `rollout undo` warning means, in my own words, and what I did so that Git and the cluster agree again: rollout undo changes only the cluster, not my file in Git, so the cluster and the file disagree (the file still said 9.9.9). I ran git restore k8s/ and then kubectl apply -f k8s/, and after that git diff was empty and rollout status said the rollout was done.
 
 ## 4 · What broke and how I found it
 
