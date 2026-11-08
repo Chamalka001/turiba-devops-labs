@@ -27,14 +27,22 @@ $ curl -s localhost:8081/
 
 ## 2 · Heal and scale
 
-- 🔮 After deleting one Pod, two seconds later I expected to see ____ because ____. What happened: ____
+- 🔮 After deleting one Pod, two seconds later I expected to see 3 Pods again, with one new Pod with a new name and a small age, because the Deployment always keeps replicas: 3. What happened: the new Pod api-7b76f4dc84-jl7h5 was already Running with age 2s, and the deleted Pod was already gone. My prediction was right.
 
 ```text
 $ kubectl -n course get pods        (after the delete)
-____
+NAME                   READY   STATUS    RESTARTS   AGE
+api-7b76f4dc84-jl7h5   1/1     Running   0          2s
+api-7b76f4dc84-mgqcd   1/1     Running   0          10m
+api-7b76f4dc84-q54cx   1/1     Running   0          10m
 
 $ kubectl -n course get pods        (with replicas: 5)
-____
+NAME                   READY   STATUS    RESTARTS   AGE
+api-7b76f4dc84-dkzt9   1/1     Running   0          2s
+api-7b76f4dc84-jl7h5   1/1     Running   0          28s
+api-7b76f4dc84-mgqcd   1/1     Running   0          11m
+api-7b76f4dc84-p9nn4   1/1     Running   0          2s
+api-7b76f4dc84-q54cx   1/1     Running   0          11m
 ```
 
 ## 3 · Roll and roll back
