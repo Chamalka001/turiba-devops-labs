@@ -1,0 +1,20 @@
+# kube-prometheus-stack values for the kind cluster (small, local)
+alertmanager:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeProxy:
+  enabled: false
+prometheus:
+  prometheusSpec:
+    retention: 6h
+    resources:
+      requests:
+        cpu: 100m
+        memory: 400Mi
+grafana:
+  defaultDashboardsEnabled: false

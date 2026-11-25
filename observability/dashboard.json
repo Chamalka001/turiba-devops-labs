@@ -1,0 +1,37 @@
+{
+  "uid": "course-app-pods",
+  "title": "course-app Pods",
+  "tags": ["course-app"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-30m", "to": "now" },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Ready Pods",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "sum(kube_pod_status_ready{namespace=\"course\",condition=\"true\"})" } ]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Container restarts per Pod",
+      "gridPos": { "h": 6, "w": 18, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "legendFormat": "{{pod}}", "expr": "sum by (pod) (kube_pod_container_status_restarts_total{namespace=\"course\"})" } ]
+    },
+    {
+      "id": 3, "type": "timeseries", "title": "CPU usage (cores) per Pod",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "legendFormat": "{{pod}}", "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"course\",container!=\"\"}[5m]))" } ]
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Memory (working set) per Pod",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] },
+      "targets": [ { "refId": "A", "legendFormat": "{{pod}}", "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"course\",container!=\"\"})" } ]
+    }
+  ]
+}
