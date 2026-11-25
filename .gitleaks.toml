@@ -1,0 +1,9 @@
+title = "course-app gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Image tags that end with a Git commit hash are not secrets"
+regexTarget = "line"
+regexes = ['''api:[0-9a-f]{40}''']
