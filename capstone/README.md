@@ -130,7 +130,7 @@ Reading the dashboard: all 4 Pods are ready and none has restarted. The db Pod u
 - The web front end runs in Compose only, not on the cluster.
 - Once, `tofu apply` failed right after `tofu destroy` with `failed to apply overlay network` (kind did not finish creating the cluster). Nothing was left behind and running `tofu apply` again worked. It took about 3 minutes, mostly pulling the images.
 - `helm history` shows APP VERSION 0.2.0 because `appVersion` in `Chart.yaml` was never updated. The running image is 1.0.0 (`values.yaml`).
-- Five Dependabot PRs are still open, including major updates (Node 26, Express 5.3), because I did not want to risk them close to the deadline.
+- 4 Dependabot PRs are still open, including major updates (Node 26, Express 5.3), because I did not want to risk them close to the deadline. I merged two others (#40 globals and the gitleaks-action 3.0.0 update).
 
 ## AI use
 
