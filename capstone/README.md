@@ -15,6 +15,8 @@ docker compose up -d
 docker compose down           # add -v to also delete the database volume
 ```
 
+If you ran Compose before and then change `DB_PASSWORD`, the API answers `{"error":"internal error"}` and its log says `password authentication failed`. The old database volume still has the old password. Fix: `docker compose down -v`, then `docker compose up -d`.
+
 ### 2. Kubernetes with Helm (kind)
 
 ```bash
@@ -126,6 +128,8 @@ Reading the dashboard: all 4 Pods are ready and none has restarted. The db Pod u
 
 - The first gitleaks scan of the whole history reported 6 findings. All were image tags that end in a 40-character commit hash, so I allowed that pattern in `.gitleaks.toml`. I tested that a real fake key is still detected.
 - The web front end runs in Compose only, not on the cluster.
+- Once, `tofu apply` failed right after `tofu destroy` with `failed to apply overlay network` (kind did not finish creating the cluster). Nothing was left behind and running `tofu apply` again worked. It took about 3 minutes, mostly pulling the images.
+- `helm history` shows APP VERSION 0.2.0 because `appVersion` in `Chart.yaml` was never updated. The running image is 1.0.0 (`values.yaml`).
 - Five Dependabot PRs are still open, including major updates (Node 26, Express 5.3), because I did not want to risk them close to the deadline.
 
 ## AI use
